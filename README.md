@@ -36,7 +36,7 @@ Key features of Hi-C quality:
 
 EXAMPLE: ```exoc stat --sam /path/to/bamfile --name sample1 --outdir /path/to/outdir```
 
-If you data in BAM or CRAM format, it is nessecary to convet it to SAM before runnig ```exoc stat```
+If your data in BAM or CRAM format, it is nessecary to convet it to SAM before runnig ```exoc stat```
 
 ### exoc trans
 
