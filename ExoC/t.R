@@ -1,0 +1,4 @@
+
+message(getwd())
+print(getwd())
+

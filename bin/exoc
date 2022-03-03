@@ -1,0 +1,130 @@
+#!/usr/bin/env python
+
+
+"""
+ExoC - Translocation detection from Exome capture Hi-C
+
+# short decription
+
+@version: $1.0$
+@author: Evgeniy Mozheiko
+@contact: eamozheiko@gmail.com
+"""
+
+import os,sys
+import argparse as ap
+
+def prepare_argparser():
+    """Prepare optparser object. New options will be added in this
+    function first.
+
+    """
+    
+    description = "ExoC --- Translocation detection from Exome capture Hi-C"
+    epilog = "For command line options of each command, type: %(prog)s COMMAND -h"
+
+    argparser = ap.ArgumentParser( description = description, epilog = epilog) #, usage = usage
+    ExoC_VERSION = '1.0'
+    argparser.add_argument("--version", action="version", version="%(prog)s " + ExoC_VERSION)
+    subparsers = argparser.add_subparsers( help = "sub-command help", dest = 'subcommand_name' ) #help="sub-command help"
+
+    # command for 'exoc hic-processing'
+    add_hicstat_parser( subparsers )
+
+    # command for 'exoc cnv pattern call'
+    add_cnv_parser( subparsers )
+
+    # command for 'exoc translocation detection'
+    add_trans_parser( subparsers )
+
+    return argparser
+
+def add_hicstat_parser(subparsers):
+    """
+    Add hicstat argument parsers
+    """
+    preparser = subparsers.add_parser("stat", help="Hi-C quality statistics and preprocessing",
+                                        description="HiCStat: get ValidPairs file and some key features of quality of Hi-C libraries\n\
+                                        EXAMPLE: exoc stat -d /path/to/bamfile -b 20000 -n sample1 -o /path/to/outdir")
+    #Main Arguments
+    preparser.add_argument("-s","--sam",dest="sam",type=str,required = True,
+                         help="SAM file obtained from raw Hi-C reads. Required only one SAM file obtained in paired-end mode")
+    preparser.add_argument("-n","--name",dest="name",type=str,
+                         help="Prefix for the result files. If not set, 'NA' will be used instead")
+    preparser.add_argument("-o","--outdir", dest="outdir", type=str, required = False,
+                         help="Path to your output directory. Current by default")
+
+    return
+
+def add_cnv_parser(subparsers):
+    """
+    Add exoc cnv pattern argument parsers
+    """
+    cnvparser = subparsers.add_parser('cnv', help = "Get CNV pattern from Hi-C",
+                                        description="ExoC cnv: get specific patten of segmented copy number variation from Hi-C\n\
+                                        EXAMPLE: exoc cnv -i path/to/case_validpairs -c path/to/control_validpairs -v /path/to/segmented_cnv.bed -n sample1 -o /path/to/outdir")
+
+    #Main Arguments
+    cnvparser.add_argument("-i","--case",dest="case",type=str, required = True,
+                         help="Input ValidPairs file of case sample")
+    cnvparser.add_argument("-c","--control",dest="control",type=str, required = True,
+                         help="Input ValidPairs file of control sample")
+    cnvparser.add_argument("-v","--cnv",dest="cnv",type=str, required = True,
+                         help="Copy number segments in .bed format: chr start end")
+    cnvparser.add_argument("-n","--name",dest="name",type=str,
+                         help="Prefix for the result files. If not set, 'NA' will be used instead")
+    cnvparser.add_argument("-o","--outdir", dest="outdir", type = str, help = "Path to your output directory. Current by default")
+
+    return
+
+def add_trans_parser(subparsers):
+    """
+    Add exoc translocations detection argument parsers
+    """
+    transparser = subparsers.add_parser("trans", help="Identify translocated loci",
+                                        description="ExoC trans: inter- and intra-chromasomal traslocated loci detection from capture Hi-C\n\
+                                        EXAMPLE: exoc trans -i path/to/case_validpairs -c path/to/control_validpairs -b 20000 -n sample1 -o /path/to/outdir")
+    #Main Arguments
+    transparser.add_argument("-i","--case",dest="case",type=str, required = True,
+                         help="Input ValidPairs file of case sample")
+    transparser.add_argument("-c","--control",dest="control",type=str, required = True,
+                         help="Input ValidPairs file of control sample")
+    transparser.add_argument("-b","--binsize",dest="binsize",type=str, required = False,
+                         help="Size of bins in Hi-C map. 10kb by default. Must be greater than in the ValidPairs file")
+    transparser.add_argument("-n","--name",dest="name",type=str,
+                         help="Prefix for the result files. If not set, 'NA' will be used instead")
+    transparser.add_argument("-o","--outdir", dest="outdir", type = str,
+                         help = "Path to your output directory. Current by default")
+    transparser.add_argument("-t","--thr_frame", dest="thr_frame", type = str,
+                         help = "Threshold of max absolute value of translocated region contacts in 5Mb frame")
+    return
+
+def main():
+    """ Main function of ExoC pipeline """
+    #parse options...
+    sys.path.append(os.path.abspath('..'))
+    argparser = prepare_argparser()
+    args = argparser.parse_args()
+
+    subcommand = args.subcommand_name
+
+    if not subcommand:
+        argparser.print_help()
+        exit()
+    if subcommand == "stat":
+        from ExoC.runexoc import statrun
+        statrun(argparser)
+    if subcommand == "cnv":
+        from ExoC.runexoc import cnvrun
+        cnvrun(argparser)
+    if subcommand == "trans":
+        from ExoC.runexoc import transrun
+        transrun(argparser)
+
+if __name__ == '__main__':
+
+    try:
+        main()
+    except KeyboardInterrupt:
+        sys.stderr.write("Interrupt me?\n")
+        sys.exit(0)
