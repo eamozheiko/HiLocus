@@ -1,0 +1,6 @@
+include README.md
+
+global-exclude __pycache__/*
+global-exclude *.pyd
+global-exclude *.pyc
+global-exclude .git*
