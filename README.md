@@ -10,11 +10,9 @@ ExoC can detect both intra- and inter-chromosomal traslocations. It also finds t
 ExoC consist of three modules:
 ```
 exoc stat
-```
-```
+
 exoc trans
-```
-```
+
 exoc cnv
 ```
 
