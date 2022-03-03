@@ -45,7 +45,7 @@ def add_hicstat_parser(subparsers):
     """
     preparser = subparsers.add_parser("stat", help="Hi-C quality statistics and preprocessing",
                                         description="HiCStat: get ValidPairs file and some key features of quality of Hi-C libraries\n\
-                                        EXAMPLE: exoc stat -s /path/to/bamfile -n sample1 -o /path/to/outdir")
+                                        EXAMPLE: exoc stat -s /path/to/samfile -n sample1 -o /path/to/outdir")
     #Main Arguments
     preparser.add_argument("-s","--sam",dest="sam",type=str,required = True,
                          help="SAM file obtained from raw Hi-C reads. Required only one SAM file obtained in paired-end mode")
