@@ -50,7 +50,7 @@ EXAMPLE: ```exoc trans --case path/to/case_validpairs --control path/to/control_
 
 ### exoc cnv
 
-Such as detecting CNV from Hi-C data is has very low precision, so this module only calculate CNV pattern of known CNV regions
+Such as detecting CNV from Hi-C data has very low precision, so this module only calculate CNV pattern of known CNV regions
 
 This can help the researcher to have more or less confidence in the CNV founded by standard methods 
 
