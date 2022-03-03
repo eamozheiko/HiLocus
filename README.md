@@ -34,7 +34,7 @@ Key features of Hi-C quality:
 - fracton of cis short range (distance less than 20kb) contacts in valid pairs
 - fracton of cis long range (distance more than 20kb) contacts in valid pairs
 
-EXAMPLE: ```exoc stat --sam /path/to/bamfile --name sample1 --outdir /path/to/outdir```
+EXAMPLE: ```exoc stat --sam /path/to/samfile --name sample1 --outdir /path/to/outdir```
 
 If your data in BAM or CRAM format, it is nessecary to convet it to SAM before runnig ```exoc stat```
 
