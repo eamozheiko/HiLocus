@@ -2,16 +2,17 @@
 
 
 ## The script will result in the file : allValidPairs
-# allValidPairs format: read_name chromosome1 position1 length1 strand1 chromosome2 position2 length2 strand2
+# allValidPairs fo#rmat: read_name chromosome1 position1 length1 strand1 chromosome2 position2 length2 strand2
 
-# allValidPairs format:  chromosome1 position1 chromosome2 position2 strand1 strand2 read_name
+# allValidPairs fo#rmat:  chromosome1 position1 chromosome2 position2 strand1 strand2 read_name
 
 SAM_FILE=$1
 OUT_DIR=$2
+SAMPLE_NAME=$3
 
 cd ${OUT_DIR}
 
-
+echo ${SAMPLE_NAME} > sample
 
 ############################################
 ## Sam parsing
@@ -57,9 +58,9 @@ function d2b7(d,  b) {
 }
 {
 print $1 " " d2b5($2) " " $3 " " $4 " " $5 " " d2b7($2)
-
-
 }' > s2
+
+
 ########################################################################################
 
 ########################################################################################
@@ -88,7 +89,6 @@ if (n!=$1) {
   
   rep=0;mult=0;unmap_one=0;unmap_both=0;
 }
-
 if($5>0 && length($3)<=5 && $3!="*"){
   rep=rep+1
 }
@@ -144,7 +144,6 @@ if (n!=$1) {
   k=0
   is_dif_chr=0
 }
-
 if(prev_chr!=$3 && k!=0){
   is_dif_chr=1
   chr1=prev_chr
@@ -156,7 +155,6 @@ if(prev_chr!=$3 && k!=0){
   str2=$2
   r2=$5
 }
-
 k=k+1
 prev_chr=$3
 prev_pos=$4
@@ -179,19 +177,15 @@ if (n!=$1) {
   str1=$2
   r1=$5
 }
-
-
 if(k!=0){
   chr2=$3
   pos2=$4
   str2=$2
   r2=$5
 }
-
 if(prev_chr!=$3 && k!=0){
   is_dif_chr=1
 }
-
 k=k+1
 prev_chr=$3
 }' >> allValidPairs_pre
@@ -240,16 +234,14 @@ if($7==$8){
   print $1 " " $2 " "$3 " " $4 " " $5 " " str2 " " $9
 } else 
 {
-
   print $1 " " $2 " "$3 " " $4 " " $5 " " $6 " " $9
 }
-
-}' > allValidPairs
+}' > allValidPairs_${SAMPLE_NAME}
 
 rm allValidPairs_pre3
 ###@@@@@@@@@@@@@@@@@@@@@@@@@@@@STAT
 # dangling ends
-cat allValidPairs | awk 'BEGIN{same=0;dif=0;}{
+cat allValidPairs_${SAMPLE_NAME} | awk 'BEGIN{same=0;dif=0;}{
 if ($5==$6) {
   same=same+1
 }
@@ -260,7 +252,7 @@ if ($5!=$6) {
 
 ###@@@@@@@@@@@@@@@@@@@@@@@@@@@@STAT
 # cis trans
-cat allValidPairs | awk 'BEGIN{cis=0;trans=0;cis_short=0;trans2=0;cis_long=0;}{
+cat allValidPairs_${SAMPLE_NAME} | awk 'BEGIN{cis=0;trans=0;cis_short=0;trans2=0;cis_long=0;}{
 if ( $1==$3 && $5==$6) {
   cis=cis+1
 }
@@ -280,7 +272,6 @@ if ( $1==$3 &&  ($4-$2)>20000 && $5==$6) {
 
 #############stat
 cat stat | awk 'BEGIN{getline sample < "sample"}{
-
 if (NR==1) {
   all_count=$1
 }
@@ -321,37 +312,27 @@ unmap_one=100*unmap_one/all_count
 unmap_one=unmap_one - unmap_one%1
 unmap_both=100*unmap_both/all_count
 unmap_both=unmap_both - unmap_both%1
-
-
 dups = 100*(1 - rep_after_dup/rep_before_dup)
 dups = dups - dups%1
-
 percent_count_of_valid_hic_interactions=percent_count_of_valid_hic_interactions - percent_count_of_valid_hic_interactions%1
 de = 100*(dif - same)/rep_after_dup
 de = de - de%1
-
-
 count_of_valid_hic_interactions = (same)*2
 percent_count_of_valid_hic_interactions = 100*count_of_valid_hic_interactions/all_count
 percent_count_of_valid_hic_interactions=percent_count_of_valid_hic_interactions - percent_count_of_valid_hic_interactions%1
-
 cis1 = 100*cis/(cis+trans)
 cis1 = cis1 - cis1%1
-
 trans1 = 100*trans/(cis+trans)
 trans1 = trans1 - trans1%1
-
 cis_short = 100*cis_short/(cis+trans)
 cis_short = cis_short/1 - cis_short%1
-
 cis_long = 100*cis_long/(cis+trans)
 cis_long = cis_long/1 - cis_long%1
-
 print "sample" "\t" "all_count_of_reads" "\t" "reported_pairs_fraction" "\t" "multiple_pairs_fraction" "\t" "unmap_one_pairs_fraction" "\t" "unmap_both_pairs_fraction" "\t" "duplicates_fraction" "\t" "valid_hic_interactions_count" "\t" "valid_hic_interactions_fraction" "\t" "dangling_ends" "\t" "cis_fraction" "\t" "trans_fraction" "\t" "cis_short_fraction" "\t" "cis_long_fraction"
-
 print sample "\t" all_count "\t" rep "\t" mult "\t" unmap_one "\t" unmap_both "\t" dups "\t" count_of_valid_hic_interactions "\t" percent_count_of_valid_hic_interactions "\t" de "\t" cis1 "\t" trans1 "\t" cis_short "\t" cis_long
-}'  > stat_res
+}'  > stat_res_${SAMPLE_NAME}
 rm stat
+rm sample
 
 exit
 

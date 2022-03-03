@@ -69,8 +69,8 @@ def opt_validate_cnv(optparser):
 
 
     Info("Argument List: ")
-    Info("Case validpairs file = " + ', '.join(opt.case))
-    Info("Control validpairs file = " + ', '.join(opt.control))
+    Info("Case validpairs file = " + join(opt.case))
+    Info("Control validpairs file = " + join(opt.control))
     Info("Segmented CNV bed file = " + opt.cnv)
     Info("Sample name = " + opt.name)
     Info("Output directory = " + opt.outdir)

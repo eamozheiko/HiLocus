@@ -1,4 +1,0 @@
-
-message(getwd())
-print(getwd())
-
