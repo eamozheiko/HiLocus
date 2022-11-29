@@ -47,7 +47,7 @@ Input for this module are files in .hic (highly recommended) or .pairs format:
     chromosome1 position1 chromosome2 position2
 ```
 
-EXAMPLE: ```hilocus trans --case full/path/to/case --control full/path/to/control --binsize 20000 --name sample1 --outdir /path/to/outdir```
+EXAMPLE: ```hilocus trans --case full/path/to/case --control full/path/to/control --binsize 10000 --name sample1 --outdir /path/to/outdir```
 
 ## Quick start
 
