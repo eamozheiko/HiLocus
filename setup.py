@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#version: 1.0
+#version: 1.1
 #author: Evgeniy Mozheiko
 #Contact: eamozheiko@gmail.com
 
@@ -19,22 +19,22 @@ requires = []
 
 def main():
     #compilemis()
-    setup(name="ExoC-Package",
+    setup(name="HiLocus-Package",
           version="1.0",
-          description="ExoC - Translocation detection from Exome capture Hi-C",
+          description="HiLocus - Translocation detection from capture Hi-C",
           long_description=long_description,
           long_description_content_type='text/markdown',
           author='Evgeniy Mozheiko',
           author_email='eamozheiko@gmail.com',
-          package_dir={'ExoC' : 'ExoC'},
+          package_dir={'HiLocus' : 'HiLocus'},
           install_requires = requires,
           setup_requires = requires,
-          #packages=['HiNT'],
+          #packages=['HiLocus'],
           packages=find_packages(),
-          package_data={'ExoC':['scripts/*']},
+          package_data={'HiLocus':['scripts/*']},
           include_package_data=True,
-          scripts=['bin/exoc'],
-	  url="https://github.com/eamozheiko/ExoC",
+          scripts=['bin/hilocus'],
+	  url="https://github.com/eamozheiko/HiLocus",
           classifiers=[
             'Programming Language :: Python :: 3',
             'Environment :: Console',

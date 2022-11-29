@@ -17,12 +17,6 @@ echo ${SAMPLE_NAME} > sample
 ############################################
 ## Sam parsing
 ############################################
-cat ${SAM_FILE} | awk '{
-if (NR>94) {
-  print $0
-}
-}' > s1
-
 grep -v "^@" ${SAM_FILE} > s1
 ###@@@@@@@@@@@@@@@@@@@@@@@@@@@@STAT
 cat s1 | awk 'BEGIN{k=0;n=0}{
