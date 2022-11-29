@@ -1,4 +1,4 @@
-# HiLocus - Translocation detection from Exome capture Hi-C
+# HiLocus - Translocation detection from capture Hi-C
 
 ## About HiLocus
 
