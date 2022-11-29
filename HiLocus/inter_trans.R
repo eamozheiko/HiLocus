@@ -259,22 +259,26 @@ hilocus_inter_trans <- function(args){
       }
     }
   }
-  vals_res0 = vals_res0[-1, ]
-  
-  ## normalization (coverage + cis/trans)
-  vals_res = normalization(vals_res0, cis_coverage_case, cis_coverage_control, trans_coverage_case, trans_coverage_control)
-  
-  ## filtration
-  # read pre-calculated standard deviation depending on coverage
-  sd_inter_trans = read.table(paste(DIR,"/data/sd_trans.tsv", sep = ""), stringsAsFactors = F, head=F)
-  sd_inter_trans = sd_inter_trans[, 1]
-  
-  # filter
-  inter_translocations = filter_inter_trans(vals_res, sd_inter_trans, probability_threshold)
-  
-  ## save results
-  write.table(inter_translocations, filename, row.names = F, col.names = T, append = F, quote = F, sep = "\t")
-  #write.table(getwd(), paste(filename, "_wd", sep = ""), row.names = F, col.names = F, append = F, quote = F, sep = "\t")
+  if(nrow(vals_res0!=1)){
+    vals_res0 = vals_res0[-1, ]
+    
+    ## normalization (coverage + cis/trans)
+    vals_res = normalization(vals_res0, cis_coverage_case, cis_coverage_control, trans_coverage_case, trans_coverage_control)
+    
+    ## filtration
+    # read pre-calculated standard deviation depending on coverage
+    sd_inter_trans = read.table(paste(DIR,"/data/sd_trans.tsv", sep = ""), stringsAsFactors = F, head=F)
+    sd_inter_trans = sd_inter_trans[, 1]
+    
+    # filter
+    inter_translocations = filter_inter_trans(vals_res, sd_inter_trans, probability_threshold)
+    
+    ## save results
+    write.table(inter_translocations, filename, row.names = F, col.names = T, append = F, quote = F, sep = "\t")
+    #write.table(getwd(), paste(filename, "_wd", sep = ""), row.names = F, col.names = F, append = F, quote = F, sep = "\t") 
+  } else {
+    message("No matching data, please try another binsize or input")
+  }
 }
 
 # conda install -c jrhawley hic-straw 

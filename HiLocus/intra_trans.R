@@ -151,21 +151,25 @@ hilocus_intra_trans <- function(args){
     w = which(vals_res[, 4] != Inf & vals_res[, 4] != 0 & !is.na(vals_res[, 4] & vals_res[, 4] != 2))
     vals_res0 = rbind(vals_res0, vals_res[w,])
   }
-  vals_res = vals_res0[-1, ]
-  
-  ## filtration
-  # read pre-calculated standard deviation and mean depending on coverage
-  sd_cis = read.table(paste(DIR,"/data/sd_cis.tsv", sep = ""), stringsAsFactors = F, head=F)
-  sd_cis = sd_cis[, 1]
-  
-  mean_cis = read.table(paste(DIR,"/data/mean_cis.tsv", sep = ""), stringsAsFactors = F, head=F)
-  mean_cis = mean_cis[, 1]
-  
-  # filter
-  intra_translocations = filter_intra_trans(vals_res, sd_cis, mean_cis, probability_threshold)
-  
-  ## save results
-  write.table(intra_translocations, filename, row.names = F, col.names = T, append = F, quote = F, sep = "\t")
+  if(nrow(vals_res0!=1)){
+    vals_res = vals_res0[-1, ]
+    
+    ## filtration
+    # read pre-calculated standard deviation and mean depending on coverage
+    sd_cis = read.table(paste(DIR,"/data/sd_cis.tsv", sep = ""), stringsAsFactors = F, head=F)
+    sd_cis = sd_cis[, 1]
+    
+    mean_cis = read.table(paste(DIR,"/data/mean_cis.tsv", sep = ""), stringsAsFactors = F, head=F)
+    mean_cis = mean_cis[, 1]
+    
+    # filter
+    intra_translocations = filter_intra_trans(vals_res, sd_cis, mean_cis, probability_threshold)
+    
+    ## save results
+    write.table(intra_translocations, filename, row.names = F, col.names = T, append = F, quote = F, sep = "\t")
+  } else {
+    message("No matching data, please try another binsize or input")
+  }
 }
 
 library(Matrix)
