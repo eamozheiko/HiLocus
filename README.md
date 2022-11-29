@@ -41,13 +41,13 @@ If your data in BAM or CRAM format, it is nessecary to convet it to SAM before r
 
 This is the main module which detect translocations from Hi-C data
 
-Input for this module is filtred read pairs in the format:
+Input for this module are files in .hic (highly recommended) or .pairs format:
 
 ```
     chromosome1 position1 chromosome2 position2
 ```
 
-EXAMPLE: ```hilocus trans --case full/path/to/case_validpairs --control full/path/to/control_validpairs --binsize 20000 --name sample1 --outdir /path/to/outdir```
+EXAMPLE: ```hilocus trans --case full/path/to/case --control full/path/to/control --binsize 20000 --name sample1 --outdir /path/to/outdir```
 
 ## Quick start
 
