@@ -17,7 +17,7 @@ hilocus trans
 
 ### hilocus stat
 
-First module - ```hilocus stat``` obtain some key features of the quality of Hi-C libraries that may affect the accuracy of translocation detection.
+First module - ```hilocus stat``` obtain some key features of the quality of Hi-C libraries which may affect the accuracy of translocation detection.
 
 Key features of Hi-C quality:
 
