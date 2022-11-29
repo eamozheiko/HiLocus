@@ -17,7 +17,7 @@ hilocus trans
 
 ### hilocus stat
 
-First module - ```hilocus stat``` get some key features of quality of Hi-C libraries and prepare fastq files to ```hilocus trans``` and ```hilocus cnv``` input
+First module - ```hilocus stat``` obtain some key features of the quality of Hi-C libraries that may affect the accuracy of translocation identification.
 
 Key features of Hi-C quality:
 
