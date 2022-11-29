@@ -5,7 +5,7 @@
 This bioinformatic tool which help to find translocated regions from Hi-C data.
 Key features of it algorims is possibility to detect translocation from sparse Hi-C matrix. For example: exome capture Hi-C.
 
-HiLocus can detect both intra- and inter-chromosomal traslocations. It also finds the probability of translocation depending on the amount of region coverage, which very helpful if coverage of you data is very heterogeneous
+HiLocus can detect both intra- and inter-chromosomal traslocations. It also finds the probability of translocation depending on the amount of region coverage, which very helpful if coverage of you data is very heterogeneous.
 
 HiLocus consist of two modules:
 ```
@@ -49,6 +49,9 @@ Input for this module is filtred read pairs in the format:
 
 EXAMPLE: ```hilocus trans --case full/path/to/case_validpairs --control full/path/to/control_validpairs --binsize 20000 --name sample1 --outdir /path/to/outdir```
 
+## Quick start
+
+K562 and GM12878 (originally taken from GSE63525) downsampled .hic files can be used to test HiLocus trans(). These .hic files only consist of chr3 - chr3 and chr3 - chr10 interactions and are only 1MB in resolution. You can find these files in the QuickStart folder. After running HiLocus, you can detect a FISH-validated reciprocal translocation with breakpoints in (chr3:48147000-48186000, chr10:86065000-86089000)
 
 ## Installation
 

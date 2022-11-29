@@ -64,33 +64,37 @@ bed_to_rowsums <- function(bed, nrows, ncols, chr_intra, chr_inter){
 }
 
 normalization <- function(vals_res, cis_coverage_case, cis_coverage_control, trans_coverage_case, trans_coverage_control){
-  cis_sum_case = sum(cis_coverage_case)
-  cis_sum_control = sum(cis_coverage_control)
-  trans_sum_case = sum(trans_coverage_case)
-  trans_sum_control = sum(trans_coverage_control)
-  cis_trans_norm_coefficient = (trans_sum_case/cis_sum_case)/(trans_sum_control/cis_sum_control)
-  
-  ## rm na
-  w = which(is.na(trans_coverage_case) | trans_coverage_case == Inf | trans_coverage_case == 0)
-  trans_coverage_case[w] = 1
-  w = which(is.na(trans_coverage_control) | trans_coverage_control == Inf | trans_coverage_control == 0)
-  trans_coverage_control[w] = 1
-  
-  if(is.na(cis_trans_norm_coefficient) || cis_trans_norm_coefficient == Inf || cis_trans_norm_coefficient == 0){
-    cis_trans_norm_coefficient = 1
-  }
-  
   ## normalization
   for (chr_intra in 1:22) {
     for (chr_inter in 1:22) {
       if(chr_intra != chr_inter){
         w = which(vals_res[, 1] == chr_intra & vals_res[, 2] == chr_inter)
         if(length(w) != 0){
+          ## calculate cis/trans normalization coefficient
+          cis_sum_case = sum(cis_coverage_case[-chr_intra])
+          cis_sum_control = sum(cis_coverage_control[-chr_intra])
+          trans_sum_case = sum(trans_coverage_case[-chr_inter, -chr_inter])
+          trans_sum_control = sum(trans_coverage_control[-chr_inter, -chr_inter])
+          cis_trans_norm_coefficient = (trans_sum_case/cis_sum_case)/(trans_sum_control/cis_sum_control)
+          
+          if(is.na(cis_trans_norm_coefficient) || cis_trans_norm_coefficient == Inf || cis_trans_norm_coefficient == 0){
+            cis_trans_norm_coefficient = 1
+          }
+          
+          ## calculate coverage normalization coefficient
+          case_coverage_chr_inter = sum(trans_coverage_case[chr_inter, -chr_inter])
+          case_coverage_chr_intra = sum(trans_coverage_case[chr_intra, -chr_inter])
+          control_coverage_chr_inter = sum(trans_coverage_control[chr_inter, -chr_inter])
+          control_coverage_chr_intra = sum(trans_coverage_control[chr_intra, -chr_inter])
+          
+          coverage_norm_coefficient = (case_coverage_chr_inter/case_coverage_chr_intra)/(control_coverage_chr_inter/control_coverage_chr_intra)
+          if(is.na(coverage_norm_coefficient) || coverage_norm_coefficient == Inf || coverage_norm_coefficient == 0){
+            coverage_norm_coefficient = 1
+          }
           ## cis/trans normalization
           vals_res[w, 5] = vals_res[w, 5]/cis_trans_norm_coefficient
           
           ## coverage normalization
-          coverage_norm_coefficient = (trans_coverage_case[chr_inter]/trans_coverage_case[chr_intra])/(trans_coverage_control[chr_inter]/trans_coverage_control[chr_intra])
           vals_res[w, 5] = vals_res[w, 5]/coverage_norm_coefficient 
         }
       }
@@ -124,19 +128,17 @@ filter_inter_trans <- function(vals_res, sd_inter_trans, probability_threshold){
   N = nrow(vals_res)
   q = as.numeric(quantile(vals_res[, 8], 0:10/10))
   
-  for (i in 1:10) {
-    w = which(vals_res[, 8] >= q[i] & vals_res[, 8] <= q[i + 1])
+  if(N < 100){
+    coverage = vals_res[w, 8]
+    coverage[which(coverage > 50)] = 50
+    sdev = sd_inter_trans[coverage]
     
-    if(N < 1000){
-      coverage = vals_res[w, 8]
-      coverage[which(coverage > 50)] = 50
-      coverage[w] = 50
-      sdev = sd_inter_trans[coverage]
-      
-      val = log(vals_res[w, 5])
-      pr = pnorm(val, 0, sdev, lower.tail = F)
-      vals_res[w, 6] = pr
-    } else {
+    val = log(vals_res[w, 5])
+    pr = pnorm(val, 0, sdev, lower.tail = F)
+    vals_res[w, 6] = pr
+  } else {
+    for (i in 1:10) {
+      w = which(vals_res[, 8] >= q[i] & vals_res[, 8] <= q[i + 1])
       coverage = vals_res[w, 8]
       sdev = sd(log(vals_res[w, 5]))
       val = log(vals_res[w, 5])
@@ -174,6 +176,8 @@ hilocus_inter_trans <- function(args){
   #vp.control.all = prepare_hic(vp.control.all, binsize)
   #vp_case_path = "/media/evgeniy/OS/fastq/GSE63525_K562_combined_30.hic"
   #vp_control_path = "/media/evgeniy/OS/fastq/GSE63525_GM12878_insitu_primary_30.hic"
+  vp_case_path = "/home/evgeniy/projects/HiLocus/QuickStart/K562_only_chr3_3_and_chr3_10_interactions_1Mb_binsize.hic"
+  vp_control_path = "/home/evgeniy/projects/HiLocus/QuickStart/GM12878_only_chr3_3_and_chr3_10_interactions_1Mb_binsize.hic"
   ## output file name
   filename = paste(outdir_path, "/inter.translocations.binsize", binsize, ".", sample_name, ".tsv", sep = "")
   
@@ -181,19 +185,22 @@ hilocus_inter_trans <- function(args){
   vals_res0 = matrix(0, nrow = 1, ncol = 10)
   cis_coverage_case = rep(0, 22)
   cis_coverage_control = rep(0, 22)
-  trans_coverage_case = rep(0, 22)
-  trans_coverage_control = rep(0, 22)
+  trans_coverage_case = matrix(0, nrow = 22, ncol =  22)
+  trans_coverage_control = matrix(0, nrow = 22, ncol =  22)
   
   for (chr_intra in 1:22) {
     ## read data
-    print(chr_intra)
+    #print(chr_intra)
     gc()
     ######################################################################################################################
     ## read hic intra
-    
-    case.intra.bed = chrom_pair(vp_case_path, chr_intra, chr_intra, binsize, input_format_case)
-    control.intra.bed = chrom_pair(vp_control_path, chr_intra, chr_intra, binsize, input_format_control)
-    
+    case.intra.bed = try(chrom_pair(vp_case_path, chr_intra, chr_intra, binsize, input_format_case),  silent = TRUE)
+    control.intra.bed = try(chrom_pair(vp_control_path, chr_intra, chr_intra, binsize, input_format_control),  silent = TRUE)
+    if(inherits(case.intra.bed, "try-error") || inherits(control.intra.bed, "try-error") )
+    {
+      #error handling code, maybe just skip this iteration using
+      next
+    }
     nrows = max(c(case.intra.bed$posi, control.intra.bed$posi))
     ncols = max(c(case.intra.bed$posj , control.intra.bed$posj))
     
@@ -212,8 +219,13 @@ hilocus_inter_trans <- function(args){
         #print(chr_inter)
         ######################################################################################################################
         ## read hic inter
-        case.inter.bed = chrom_pair(vp_case_path, chr_intra, chr_inter, binsize, input_format_case)
-        control.inter.bed = chrom_pair(vp_control_path, chr_intra, chr_inter, binsize, input_format_control)
+        case.inter.bed = try(chrom_pair(vp_case_path, chr_intra, chr_inter, binsize, input_format_case),  silent = TRUE)
+        control.inter.bed = try(chrom_pair(vp_control_path, chr_intra, chr_inter, binsize, input_format_control),  silent = TRUE)
+        if(inherits(case.inter.bed, "try-error") || inherits(control.inter.bed, "try-error") )
+        {
+          #error handling code, maybe just skip this iteration using
+          next
+        }
         
         nrows = max(c(case.inter.bed$posi, control.inter.bed$posi))
         ncols = max(c(case.inter.bed$posj , control.inter.bed$posj))
@@ -222,8 +234,10 @@ hilocus_inter_trans <- function(args){
         control.inter.rowsums = bed_to_rowsums(control.inter.bed, nrows, ncols, chr_intra, chr_inter)
         
         ## trans sum
-        trans_coverage_case[chr_intra] = trans_coverage_case[chr_intra] + sum(case.inter.rowsums)
-        trans_coverage_control[chr_intra] = trans_coverage_control[chr_intra] + sum(control.inter.rowsums)
+        trans_coverage_case[chr_intra, chr_inter] = trans_coverage_case[chr_intra] + sum(case.inter.rowsums)
+        trans_coverage_control[chr_intra, chr_inter] = trans_coverage_control[chr_intra] + sum(control.inter.rowsums)
+        trans_coverage_case[chr_intra, chr_inter] = trans_coverage_case[chr_inter, chr_intra]
+        trans_coverage_control[chr_intra, chr_inter] = trans_coverage_control[chr_inter, chr_intra]
         ######################################################################################################################
         ## result
         N = min(c(length(case.inter.rowsums), length(case.intra.rowsums), length(control.inter.rowsums), length(control.intra.rowsums)))

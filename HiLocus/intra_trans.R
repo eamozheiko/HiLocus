@@ -58,22 +58,20 @@ normalization <- function(m){
 filter_intra_trans <- function(vals_res, sd_cis, mean_cis, probability_threshold){
   N = nrow(vals_res)
   q = as.numeric(quantile(vals_res[, 6], 0:10/10))
-  
-  for (i in 1:10) {
-    w = which(vals_res[, 6] >= q[i] & vals_res[, 6] <= q[i + 1])
+
+  if(N < 100){
+    coverage = vals_res[w, 6]
+    coverage[which(coverage > 200)] = 200
     
-    if(N < 100){
-      coverage = vals_res[w, 6]
-      coverage[which(coverage > 200)] = 200
-      coverage[w] = 200
-      
-      sdev = sd_cis[coverage]
-      m = mean_cis[coverage]
-      
-      val = vals_res[w, 4]
-      pr = pnorm(val, m, sdev, lower.tail = F)
-      vals_res[w, 5] = pr
-    } else {
+    sdev = sd_cis[coverage]
+    m = mean_cis[coverage]
+    
+    val = vals_res[w, 4]
+    pr = pnorm(val, m, sdev, lower.tail = F)
+    vals_res[w, 5] = pr
+  } else {
+    for (i in 1:10) {
+      w = which(vals_res[, 6] >= q[i] & vals_res[, 6] <= q[i + 1])
       coverage = vals_res[w, 6]
       
       sdev = sd(vals_res[w, 4])
@@ -116,14 +114,17 @@ hilocus_intra_trans <- function(args){
   
   for (chr in 1:22) {
     ## read data
-    print(chr)
+    #print(chr)
     gc()
     ######################################################################################################################
     ## read hic intra
-    
-    case.bed = chrom_pair(vp_case_path, chr, binsize, input_format_case)
-    control.bed = chrom_pair(vp_control_path, chr, binsize, input_format_control)
-    
+    case.bed = try(chrom_pair(vp_case_path, chr, binsize, input_format_case),  silent = TRUE)
+    control.bed = try(chrom_pair(vp_control_path, chr, binsize, input_format_control),  silent = TRUE)
+    if(inherits(case.bed, "try-error") || inherits(control.bed, "try-error") )
+    {
+      #error handling code, maybe just skip this iteration using
+      next
+    }
     m = c(case.bed$posi, case.bed$posj, control.bed$posi, control.bed$posj)
     nrows = max(m%/%binsize + 1)
     ncols = max(m%/%binsize_frame + 1)
