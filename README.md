@@ -51,7 +51,7 @@ EXAMPLE: ```hilocus trans --case full/path/to/case_validpairs --control full/pat
 
 ## Quick start
 
-K562 and GM12878 (originally taken from GSE63525) are downsampled .hic files which can be used to test HiLocus trans. These .hic files only consist of chr3 - chr3 and chr3 - chr10 interactions and are only 1MB in resolution. You can find these files in the QuickStart folder. Use k562 as case sample and GM12878 as a control. After running HiLocus trans, you can detect a FISH-validated reciprocal translocation with breakpoints in (chr3:48147000-48186000, chr10:86065000-86089000)
+K562 and GM12878 (originally taken from GSE63525) are downsampled .hic files which can be used to test HiLocus trans. These .hic files only consist of chr3 - chr3 and chr3 - chr10 interactions and are only 1MB in resolution. You can find these files in the QuickStart folder. Use k562 as a case sample and GM12878 as a control. After running HiLocus trans, you can detect a FISH-validated reciprocal translocation with breakpoints in (chr3:48147000-48186000, chr10:86065000-86089000)
 
 ## Installation
 
