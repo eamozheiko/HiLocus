@@ -5,7 +5,7 @@
 This bioinformatic tool which help to find translocated regions from Hi-C data.
 Key features of it algorims is possibility to detect translocation from sparse Hi-C matrix. For example: exome capture Hi-C.
 
-HiLocus can detect both intra- and inter-chromosomal traslocations. It also finds the probability of translocation depending on the amount of region coverage, which very helpful if coverage of you data is very ununiform
+HiLocus can detect both intra- and inter-chromosomal traslocations. It also finds the probability of translocation depending on the amount of region coverage, which very helpful if coverage of you data is very heterogeneous
 
 HiLocus consist of two modules:
 ```
