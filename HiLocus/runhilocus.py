@@ -36,12 +36,12 @@ def transrun(args):
     input_format_control = os.path.splitext(opts.control)[-1]
 
     ## intra
-    command = "Rscript %s %s %s %s %s %s %s %s %s %s"%(os.path.abspath('../HiLocus/intra_trans.R'), os.path.abspath('..'), os.path.abspath(opts.outdir), opts.case, opts.control, opts.binsize, opts.name, opts.thr_intra, input_format_case, input_format_control)
+    command = "Rscript %s %s %s %s %s %s %s %s %s %s"%(os.path.abspath('../scripts/intra_trans.R'), os.path.abspath('..'), os.path.abspath(opts.outdir), opts.case, opts.control, opts.binsize, opts.name, opts.thr_intra, input_format_case, input_format_control)
     print(command)
     run_cmd(command)
     
     ## inter
-    command = "Rscript %s %s %s %s %s %s %s %s %s %s"%(os.path.abspath('../HiLocus/inter_trans.R'), os.path.abspath('..'), os.path.abspath(opts.outdir), opts.case, opts.control, opts.binsize, opts.name, opts.thr_inter, input_format_case, input_format_control)
+    command = "Rscript %s %s %s %s %s %s %s %s %s %s"%(os.path.abspath('../scripts/inter_trans.R'), os.path.abspath('..'), os.path.abspath(opts.outdir), opts.case, opts.control, opts.binsize, opts.name, opts.thr_inter, input_format_case, input_format_control)
     print(command)
     run_cmd(command)
     
