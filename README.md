@@ -57,10 +57,20 @@ K562 and GM12878 (originally taken from GSE63525) are downsampled .hic files whi
 
 ### Dependencies
 
-- Python 3.9
-- R 3.6.1
+- Python >=3.9.13
+- R >=4.2
+- r-matrix
+- r-remotes
+- strawr (https://github.com/aidenlab/straw/tree/master/R)
 
 ### Install HiLocus
+
+Install using conda
+
+```
+conda install hilocus
+```
+
 Manually installation 
 
 1. Install HiLocus dependencies
