@@ -288,8 +288,12 @@ hilocus_inter_trans <- function(args){
 #BiocManager::install("HiCcompare")
 #BiocManager::install("strawr")
 library(Matrix)
-library(strawr)
-#library(HiCcompare)
+library(remotes)
+if(library(strawr, logical.return = TRUE)){
+  library(strawr)
+} else {
+  remotes::install_github("aidenlab/straw/R", quiet = TRUE)
+}
 
 options(scipen=999)
 args = commandArgs(trailingOnly=TRUE)
