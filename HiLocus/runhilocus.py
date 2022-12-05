@@ -20,9 +20,13 @@ from HiLocus.corelib import *
 def statrun(args):
     opts = opt_validate_stat(args)
     
-    path_to_stat_script = resource_filename('HiLocus', 'scripts/sam_to_valid_pairs.sh')
-    subprocess.call(path_to_stat_script + " " + opts.sam + " " + os.path.abspath() + os.path.abspath(opts.outdir) + " " + opts.name, shell=True)
+    #path_to_stat_script = resource_filename('HiLocus', 'scripts/sam_to_valid_pairs.sh')
+    #subprocess.call(path_to_stat_script + " " + os.path.abspath(opts.sam) + " " + os.path.abspath(opts.outdir) + " " + opts.name, shell=True)
 
+    path_to_stat_script = resource_filename('HiLocus', 'scripts/test.sh')
+    command = "%s %s %s %s"%(path_to_stat_script, os.path.abspath(opts.sam), os.path.abspath(opts.outdir), opts.name)
+    print(command)
+    run_cmd(command)
     
     Info("Done! Find your stat results from %s" %(opts.outdir))
     return
@@ -48,6 +52,5 @@ def transrun(args):
     print(command)
     run_cmd(command)
     
-
     Info("Done! Find your translocation results from %s"%(opts.outdir))
     return
