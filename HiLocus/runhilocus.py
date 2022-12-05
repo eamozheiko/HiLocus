@@ -34,19 +34,20 @@ def transrun(args):
     ## prepare input
     input_format_case = os.path.splitext(opts.case)[-1]
     input_format_control = os.path.splitext(opts.control)[-1]
-
+    path_to_data = resource_filename('HiLocus', 'data/')
+    
     ## intra
-    command = "Rscript %s %s %s %s %s %s %s %s %s %s"%(os.path.abspath('../scripts/intra_trans.R'), os.path.abspath('..'), os.path.abspath(opts.outdir), opts.case, opts.control, opts.binsize, opts.name, opts.thr_intra, input_format_case, input_format_control)
+    path_to_intra_trans_script = resource_filename('HiLocus', 'scripts/intra_trans.R')
+    command = "Rscript %s %s %s %s %s %s %s %s %s %s"%(path_to_intra_trans_script, path_to_data, os.path.abspath(opts.outdir), os.path.abspath(opts.case), os.path.abspath(opts.control), opts.binsize, opts.name, opts.thr_intra, input_format_case, input_format_control)
     print(command)
     run_cmd(command)
     
     ## inter
-    command = "Rscript %s %s %s %s %s %s %s %s %s %s"%(os.path.abspath('../scripts/inter_trans.R'), os.path.abspath('..'), os.path.abspath(opts.outdir), opts.case, opts.control, opts.binsize, opts.name, opts.thr_inter, input_format_case, input_format_control)
+    path_to_inter_trans_script = resource_filename('HiLocus', 'scripts/inter_trans.R')
+    command = "Rscript %s %s %s %s %s %s %s %s %s %s"%(path_to_inter_trans_script, path_to_data, os.path.abspath(opts.outdir), os.path.abspath(opts.case), os.path.abspath(opts.control), opts.binsize, opts.name, opts.thr_inter, input_format_case, input_format_control)
     print(command)
     run_cmd(command)
     
 
-
-    
     Info("Done! Find your translocation results from %s"%(opts.outdir))
     return

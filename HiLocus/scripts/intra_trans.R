@@ -96,7 +96,7 @@ filter_intra_trans <- function(vals_res, sd_cis, mean_cis, probability_threshold
 
 
 hilocus_intra_trans <- function(args){
-  DIR = args[1]
+  path_to_data = args[1]
   outdir_path = args[2]
   vp_case_path = args[3]
   vp_control_path = args[4]
@@ -156,10 +156,10 @@ hilocus_intra_trans <- function(args){
     
     ## filtration
     # read pre-calculated standard deviation and mean depending on coverage
-    sd_cis = read.table(paste(DIR,"/data/sd_cis.tsv", sep = ""), stringsAsFactors = F, head=F)
+    sd_cis = read.table(paste(path_to_data,"/sd_cis.tsv", sep = ""), stringsAsFactors = F, head=F)
     sd_cis = sd_cis[, 1]
     
-    mean_cis = read.table(paste(DIR,"/data/mean_cis.tsv", sep = ""), stringsAsFactors = F, head=F)
+    mean_cis = read.table(paste(path_to_data,"/mean_cis.tsv", sep = ""), stringsAsFactors = F, head=F)
     mean_cis = mean_cis[, 1]
     
     # filter

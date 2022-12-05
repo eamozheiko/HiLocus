@@ -159,7 +159,7 @@ filter_inter_trans <- function(vals_res, sd_inter_trans, probability_threshold){
 }
 
 hilocus_inter_trans <- function(args){
-  DIR = args[1]
+  path_to_data = args[1]
   outdir_path = args[2]
   vp_case_path = args[3]
   vp_control_path = args[4]
@@ -267,7 +267,7 @@ hilocus_inter_trans <- function(args){
     
     ## filtration
     # read pre-calculated standard deviation depending on coverage
-    sd_inter_trans = read.table(paste(DIR,"/data/sd_trans.tsv", sep = ""), stringsAsFactors = F, head=F)
+    sd_inter_trans = read.table(paste(path_to_data, "/sd_trans.tsv", sep = ""), stringsAsFactors = F, head=F)
     sd_inter_trans = sd_inter_trans[, 1]
     
     # filter

@@ -68,7 +68,7 @@ K562 and GM12878 (originally taken from GSE63525) are downsampled .hic files whi
 Install using conda
 
 ```
-conda install hilocus
+ conda install -c mozheiko hilocus
 ```
 
 Manually installation 
