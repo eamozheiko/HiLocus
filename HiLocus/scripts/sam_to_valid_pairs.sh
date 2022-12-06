@@ -323,7 +323,7 @@ cis_short = 100*cis_short/(cis+trans)
 cis_short = cis_short/1 - cis_short%1
 cis_long = 100*cis_long/(cis+trans)
 cis_long = cis_long/1 - cis_long%1
-print "SAMPLE_NAME" "\t" "REPORTED_PAIRS (%)" "\t" "MULTIPLE_PAIRS (%)" "\t" "UNMAP_ONE_PAIRS (%)" "\t" "UNMAP_BOTH_PAIRS (%)" "\t" "DUPLICATES (%)" "\t" "HIC_INTERACTIONS (count)" "\t" "HIC_INTERACTIONS (%)" "\t" "DANGLING_ENDS (%)" "\t" "CIS (%)" "\t" "TRANS (%)" "\t" "CIS_SHORT (%) "\t" "CIS_LONG (%)"
+print "SAMPLE_NAME" "\t" "REPORTED_PAIRS (%)" "\t" "MULTIPLE_PAIRS (%)" "\t" "UNMAP_ONE_PAIRS (%)" "\t" "UNMAP_BOTH_PAIRS (%)" "\t" "DUPLICATES (%)" "\t" "HIC_INTERACTIONS (count)" "\t" "HIC_INTERACTIONS (%)" "\t" "DANGLING_ENDS (%)" "\t" "CIS (%)" "\t" "TRANS (%)" "\t" "CIS_SHORT (%)" "\t" "CIS_LONG (%)"
 print sample "\t" rep "\t" mult "\t" unmap_one "\t" unmap_both "\t" dups "\t" count_of_valid_hic_interactions "\t" percent_count_of_valid_hic_interactions "\t" de "\t" cis1 "\t" trans1 "\t" cis_short "\t" cis_long
 }'  > stat_res_${SAMPLE_NAME}
 rm stat

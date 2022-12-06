@@ -21,6 +21,9 @@ def statrun(args):
     opts = opt_validate_stat(args)
     
     path_to_stat_script = resource_filename('HiLocus', 'scripts/sam_to_valid_pairs.sh')
+    command = "%s %s"%("chmod u+x", path_to_stat_script)
+    run_cmd(command)
+    
     command = "%s %s %s %s"%(path_to_stat_script, os.path.abspath(opts.sam), os.path.abspath(opts.outdir), opts.name)
     print(command)
     run_cmd(command)
