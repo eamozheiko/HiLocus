@@ -55,19 +55,13 @@ normalization <- function(m){
   return(m)
 }
 
-filter_intra_trans <- function(vals_res, sd_cis, mean_cis, probability_threshold){
+filter_intra_trans <- function(vals_res, probability_threshold){
   N = nrow(vals_res)
   q = as.numeric(quantile(vals_res[, 6], 0:10/10))
 
   if(N < 100){
-    coverage = vals_res[w, 6]
-    coverage[which(coverage > 200)] = 200
-    
-    sdev = sd_cis[coverage]
-    m = mean_cis[coverage]
-    
     val = vals_res[w, 4]
-    pr = pnorm(val, m, sdev, lower.tail = F)
+    pr = pnorm(val, 0.19, 0.086, lower.tail = F)
     vals_res[w, 5] = pr
   } else {
     for (i in 1:10) {
@@ -96,15 +90,14 @@ filter_intra_trans <- function(vals_res, sd_cis, mean_cis, probability_threshold
 
 
 hilocus_intra_trans <- function(args){
-  path_to_data = args[1]
-  outdir_path = args[2]
-  vp_case_path = args[3]
-  vp_control_path = args[4]
-  binsize = as.numeric(args[5])
-  sample_name = args[6]
-  probability_threshold = as.numeric(args[7])
-  input_format_case = args[8]
-  input_format_control = args[9]
+  outdir_path = args[1]
+  vp_case_path = args[2]
+  vp_control_path = args[3]
+  binsize = as.numeric(args[4])
+  sample_name = args[5]
+  probability_threshold = as.numeric(args[6])
+  input_format_case = args[7]
+  input_format_control = args[8]
   
   ## output file name
   filename = paste(outdir_path, "/intra.translocations.binsize", binsize, ".", sample_name, ".tsv", sep = "")
@@ -155,15 +148,7 @@ hilocus_intra_trans <- function(args){
     vals_res = vals_res0[-1, ]
     
     ## filtration
-    # read pre-calculated standard deviation and mean depending on coverage
-    sd_cis = read.table(paste(path_to_data,"/sd_cis.tsv", sep = ""), stringsAsFactors = F, head=F)
-    sd_cis = sd_cis[, 1]
-    
-    mean_cis = read.table(paste(path_to_data,"/mean_cis.tsv", sep = ""), stringsAsFactors = F, head=F)
-    mean_cis = mean_cis[, 1]
-    
-    # filter
-    intra_translocations = filter_intra_trans(vals_res, sd_cis, mean_cis, probability_threshold)
+    intra_translocations = filter_intra_trans(vals_res, probability_threshold)
     
     ## save results
     write.table(intra_translocations, filename, row.names = F, col.names = T, append = F, quote = F, sep = "\t")
@@ -173,18 +158,13 @@ hilocus_intra_trans <- function(args){
 }
 
 library(Matrix)
-library(remotes)
-if(library(strawr, logical.return = TRUE)){
-  library(strawr)
-} else {
-  remotes::install_github("aidenlab/straw/R", quiet = TRUE)
-}
+library(strawr)
+
 
 options(scipen=999)
 args = commandArgs(trailingOnly=TRUE)
 
 ## default variables
-#outdir_path = getwd()
 #binsize = 10000
 binsize_frame = 5*10^6
 #probability_threshold = 10^(-6)

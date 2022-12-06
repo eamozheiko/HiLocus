@@ -20,10 +20,7 @@ from HiLocus.corelib import *
 def statrun(args):
     opts = opt_validate_stat(args)
     
-    #path_to_stat_script = resource_filename('HiLocus', 'scripts/sam_to_valid_pairs.sh')
-    #subprocess.call(path_to_stat_script + " " + os.path.abspath(opts.sam) + " " + os.path.abspath(opts.outdir) + " " + opts.name, shell=True)
-
-    path_to_stat_script = resource_filename('HiLocus', 'scripts/test.sh')
+    path_to_stat_script = resource_filename('HiLocus', 'scripts/sam_to_valid_pairs.sh')
     command = "%s %s %s %s"%(path_to_stat_script, os.path.abspath(opts.sam), os.path.abspath(opts.outdir), opts.name)
     print(command)
     run_cmd(command)
@@ -38,17 +35,16 @@ def transrun(args):
     ## prepare input
     input_format_case = os.path.splitext(opts.case)[-1]
     input_format_control = os.path.splitext(opts.control)[-1]
-    path_to_data = resource_filename('HiLocus', 'data/')
     
     ## intra
     path_to_intra_trans_script = resource_filename('HiLocus', 'scripts/intra_trans.R')
-    command = "Rscript %s %s %s %s %s %s %s %s %s %s"%(path_to_intra_trans_script, path_to_data, os.path.abspath(opts.outdir), os.path.abspath(opts.case), os.path.abspath(opts.control), opts.binsize, opts.name, opts.thr_intra, input_format_case, input_format_control)
+    command = "Rscript %s %s %s %s %s %s %s %s %s %s"%(path_to_intra_trans_script, os.path.abspath(opts.outdir), os.path.abspath(opts.case), os.path.abspath(opts.control), opts.binsize, opts.name, opts.thr_intra, input_format_case, input_format_control)
     print(command)
     run_cmd(command)
     
     ## inter
     path_to_inter_trans_script = resource_filename('HiLocus', 'scripts/inter_trans.R')
-    command = "Rscript %s %s %s %s %s %s %s %s %s %s"%(path_to_inter_trans_script, path_to_data, os.path.abspath(opts.outdir), os.path.abspath(opts.case), os.path.abspath(opts.control), opts.binsize, opts.name, opts.thr_inter, input_format_case, input_format_control)
+    command = "Rscript %s %s %s %s %s %s %s %s %s %s"%(path_to_inter_trans_script, os.path.abspath(opts.outdir), os.path.abspath(opts.case), os.path.abspath(opts.control), opts.binsize, opts.name, opts.thr_inter, input_format_case, input_format_control)
     print(command)
     run_cmd(command)
     

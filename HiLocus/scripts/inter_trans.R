@@ -124,17 +124,13 @@ only_max_vals <- function(vals_res){
   return(vals_res)
 }
 
-filter_inter_trans <- function(vals_res, sd_inter_trans, probability_threshold){
+filter_inter_trans <- function(vals_res, probability_threshold){
   N = nrow(vals_res)
   q = as.numeric(quantile(vals_res[, 8], 0:10/10))
   
-  if(N < 100){
-    coverage = vals_res[w, 8]
-    coverage[which(coverage > 50)] = 50
-    sdev = sd_inter_trans[coverage]
-    
+  if(N < 100){    
     val = log(vals_res[w, 5])
-    pr = pnorm(val, 0, sdev, lower.tail = F)
+    pr = pnorm(val, 0, 0.45, lower.tail = F)
     vals_res[w, 6] = pr
   } else {
     for (i in 1:10) {
@@ -159,25 +155,16 @@ filter_inter_trans <- function(vals_res, sd_inter_trans, probability_threshold){
 }
 
 hilocus_inter_trans <- function(args){
-  path_to_data = args[1]
-  outdir_path = args[2]
-  vp_case_path = args[3]
-  vp_control_path = args[4]
-  binsize = as.numeric(args[5])
-  sample_name = args[6]
-  probability_threshold = as.numeric(args[7])
-  input_format_case = args[8]
-  input_format_control = args[9]
+  outdir_path = args[1]
+  vp_case_path = args[2]
+  vp_control_path = args[3]
+  binsize = as.numeric(args[4])
+  sample_name = args[5]
+  probability_threshold = as.numeric(args[6])
+  input_format_case = args[7]
+  input_format_control = args[8]
   
-  ## read Hi-C valid pairs
-  #vp.case.all = read.table(vp_case_path, stringsAsFactors = F, head=T)
-  #vp.control.all = read.table(vp_control_path, stringsAsFactors = F, head=T)
-  #vp.case.all = prepare_hic(vp.case.all, binsize)
-  #vp.control.all = prepare_hic(vp.control.all, binsize)
-  #vp_case_path = "/media/evgeniy/OS/fastq/GSE63525_K562_combined_30.hic"
-  #vp_control_path = "/media/evgeniy/OS/fastq/GSE63525_GM12878_insitu_primary_30.hic"
-  vp_case_path = "/home/evgeniy/projects/HiLocus/QuickStart/K562_only_chr3_3_and_chr3_10_interactions_1Mb_binsize.hic"
-  vp_control_path = "/home/evgeniy/projects/HiLocus/QuickStart/GM12878_only_chr3_3_and_chr3_10_interactions_1Mb_binsize.hic"
+
   ## output file name
   filename = paste(outdir_path, "/inter.translocations.binsize", binsize, ".", sample_name, ".tsv", sep = "")
   
@@ -266,12 +253,7 @@ hilocus_inter_trans <- function(args){
     vals_res = normalization(vals_res0, cis_coverage_case, cis_coverage_control, trans_coverage_case, trans_coverage_control)
     
     ## filtration
-    # read pre-calculated standard deviation depending on coverage
-    sd_inter_trans = read.table(paste(path_to_data, "/sd_trans.tsv", sep = ""), stringsAsFactors = F, head=F)
-    sd_inter_trans = sd_inter_trans[, 1]
-    
-    # filter
-    inter_translocations = filter_inter_trans(vals_res, sd_inter_trans, probability_threshold)
+    inter_translocations = filter_inter_trans(vals_res, probability_threshold)
     
     ## save results
     write.table(inter_translocations, filename, row.names = F, col.names = T, append = F, quote = F, sep = "\t")
@@ -281,25 +263,15 @@ hilocus_inter_trans <- function(args){
   }
 }
 
-# conda install -c jrhawley hic-straw 
-# conda install -c bioconda bioconductor-hiccompare
-#install.packages("Matrix")
-#install.packages("BiocManager")
-#BiocManager::install("HiCcompare")
-#BiocManager::install("strawr")
+
 library(Matrix)
-library(remotes)
-if(library(strawr, logical.return = TRUE)){
-  library(strawr)
-} else {
-  remotes::install_github("aidenlab/straw/R", quiet = TRUE)
-}
+library(strawr)
+
 
 options(scipen=999)
 args = commandArgs(trailingOnly=TRUE)
 
 ## default variables
-#outdir_path = getwd()
 #binsize = 10000
 #binsize_frame = 5000000
 #probability_threshold = 10^(-6)
