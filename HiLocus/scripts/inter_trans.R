@@ -265,8 +265,13 @@ hilocus_inter_trans <- function(args){
 
 
 library(Matrix)
-library(strawr)
-
+library(remotes)
+if(library(strawr, logical.return = TRUE)){
+  library(strawr)
+} else {
+  remotes::install_github("aidenlab/straw/R", quiet = TRUE)
+  library(strawr)
+}
 
 options(scipen=999)
 args = commandArgs(trailingOnly=TRUE)
