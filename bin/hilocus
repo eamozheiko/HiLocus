@@ -40,7 +40,7 @@ def add_hicstat_parser(subparsers):
     """
     Add hicstat argument parsers
     """
-    preparser = subparsers.add_parser("stat", help="Hi-C quality statistics and preprocessing",
+    preparser = subparsers.add_parser("stat", help="Hi-C quality statistics",
                                         description="HiCStat: get ValidPairs file and some key features of quality of Hi-C libraries\n\
                                         EXAMPLE: hilocus stat -s /path/to/samfile -n sample1 -o /path/to/outdir")
     #Main Arguments
