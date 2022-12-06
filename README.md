@@ -39,7 +39,7 @@ Possible inputs: BAM or SAM files
 
 ### hilocus trans
 
-This is the main module which detect translocations from Hi-C data
+This is the main module that detects translocations from Hi-C data.
 
 Input for this module are files in .hic (highly recommended) or .pairs format:
 
