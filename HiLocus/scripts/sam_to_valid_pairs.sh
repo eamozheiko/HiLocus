@@ -6,7 +6,7 @@
 
 # allValidPairs fo#rmat:  chromosome1 position1 chromosome2 position2 strand1 strand2 read_name
 
-SAM_FILE=$1
+INPUT_FILE=$1
 OUT_DIR=$2
 SAMPLE_NAME=$3
 
@@ -14,24 +14,28 @@ cd ${OUT_DIR}
 
 echo ${SAMPLE_NAME} > sample
 
+
 ############################################
 ## Sam parsing
 ############################################
-grep -v "^@" ${SAM_FILE} > s1
+
+x=10000
+y=$(samtools view -c $INPUT_FILE)
+READS_FRACTION=$(python3 -c "print($x/$y)")
+cat $INPUT_FILE | samtools view -s ${READS_FRACTION} -o ${SAMPLE_NAME}.sam
+INPUT_FILE1=${SAMPLE_NAME}.sam
+
+
 ###@@@@@@@@@@@@@@@@@@@@@@@@@@@@STAT
-cat s1 | awk 'BEGIN{k=0;n=0}{
-  if (n!=$1) {
-    n=$1
-    k=k+1
+cat $INPUT_FILE1 | awk 'BEGIN{k=0;n=0}{
+if (n!=$1) {
+  n=$1
+  k=k+1
 }
 }END{ { print k } }' > stat
 
-
-
-
 #extract nessesary columns and descript orientation from SAM flag 
-
-cat s1 | awk '
+cat $INPUT_FILE1 | awk '
 function d2b5(d,  b) {
       k = 0
       while(k != 5) {
@@ -63,7 +67,7 @@ print $1 " " d2b5($2) " " $3 " " $4 " " $5 " " d2b7($2)
 ############################################
 ## Identificate reported pairs, multiple alignment, unmapped
 ############################################
-cat s1 | awk 'BEGIN{k=0; n=0; rep=0; mult=0; unmap=0; rep_count=0; mult_count=0; unmap_one_count=0; unmap_both_count=0;}{
+cat $INPUT_FILE1 | awk 'BEGIN{k=0; n=0; rep=0; mult=0; unmap=0; rep_count=0; mult_count=0; unmap_one_count=0; unmap_both_count=0;}{
 if (n!=$1) {
   n=$1
   
@@ -94,7 +98,7 @@ print rep_count " " mult_count " " unmap_one_count " " unmap_both_count-1
 }' > is_rep_mult_unmap
 
 
-rm s1
+rm $INPUT_FILE1
 ###@@@@@@@@@@@@@@@@@@@@@@@@@@@@STAT
 #is_rep, mult, unmap_both, unmap_one 
 cat is_rep_mult_unmap | awk '{ { print $1 } }'  >> stat
@@ -322,11 +326,12 @@ cis_short = 100*cis_short/(cis+trans)
 cis_short = cis_short/1 - cis_short%1
 cis_long = 100*cis_long/(cis+trans)
 cis_long = cis_long/1 - cis_long%1
-print "sample" "\t" "all_count_of_reads" "\t" "reported_pairs_fraction" "\t" "multiple_pairs_fraction" "\t" "unmap_one_pairs_fraction" "\t" "unmap_both_pairs_fraction" "\t" "duplicates_fraction" "\t" "valid_hic_interactions_count" "\t" "valid_hic_interactions_fraction" "\t" "dangling_ends" "\t" "cis_fraction" "\t" "trans_fraction" "\t" "cis_short_fraction" "\t" "cis_long_fraction"
-print sample "\t" all_count "\t" rep "\t" mult "\t" unmap_one "\t" unmap_both "\t" dups "\t" count_of_valid_hic_interactions "\t" percent_count_of_valid_hic_interactions "\t" de "\t" cis1 "\t" trans1 "\t" cis_short "\t" cis_long
+print "SAMPLE_NAME" "\t" "REPORTED_PAIRS (%)" "\t" "MULTIPLE_PAIRS (%)" "\t" "UNMAP_ONE_PAIRS (%)" "\t" "UNMAP_BOTH_PAIRS (%)" "\t" "DUPLICATES (%)" "\t" "HIC_INTERACTIONS (count)" "\t" "HIC_INTERACTIONS (%)" "\t" "DANGLING_ENDS (%)" "\t" "CIS (%)" "\t" "TRANS (%)" "\t" "CIS_SHORT (%) "\t" "CIS_LONG (%)"
+print sample "\t" rep "\t" mult "\t" unmap_one "\t" unmap_both "\t" dups "\t" count_of_valid_hic_interactions "\t" percent_count_of_valid_hic_interactions "\t" de "\t" cis1 "\t" trans1 "\t" cis_short "\t" cis_long
 }'  > stat_res_${SAMPLE_NAME}
 rm stat
 rm sample
+rm allValidPairs_${SAMPLE_NAME}
 
 exit
 

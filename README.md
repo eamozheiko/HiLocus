@@ -58,10 +58,8 @@ K562 and GM12878 (originally taken from GSE63525) are downsampled .hic files whi
 ### Dependencies
 
 - Python >=3.9.13
-- R >=4.2
-- r-matrix
-- r-remotes
-- strawr (https://github.com/aidenlab/straw/tree/master/R)
+- R >=4.2 (r-matrix, r-remotes, strawr (https://github.com/aidenlab/straw/tree/master/R))
+- samtools >=1.6
 
 ### Install HiLocus
 
