@@ -51,10 +51,10 @@ EXAMPLE: ```hilocus trans --case /path/to/case.hic --control /path/to/control.hi
 
 ## Quick start
 hilocus stat:
-Use k562.4DN.4DNFINZQ97F3.4DNFI65EZTY7.5000pairs.bam - downsampled .bam in Quickstart folder
+Use k562.4DN.4DNFINZQ97F3.4DNFI65EZTY7.5000pairs.bam - downsampled .bam in quickstart folder
 
 hilocus trans:
-K562 and GM12878 (originally taken from GSE63525) are downsampled .hic files which can be used to test HiLocus trans. These .hic files only consist of chr3 - chr3 and chr3 - chr10 interactions and are only 1MB in resolution. You can find these files in the QuickStart folder. Use k562 as case, GM12878 as control and set binsize to 1000000. After running HiLocus trans, you can detect a FISH-validated reciprocal translocation with breakpoints in (chr3:48147000-48186000, chr10:86065000-86089000)
+K562 and GM12878 (originally taken from GSE63525) are downsampled .hic files which can be used to test HiLocus trans. These .hic files only consist of chr3 - chr3 and chr3 - chr10 interactions and are only 1MB in resolution. You can find these files in the quickStart folder. Use k562 as case, GM12878 as control and set binsize to 1000000. After running HiLocus trans, you can detect a FISH-validated reciprocal translocation with breakpoints in (chr3:48147000-48186000, chr10:86065000-86089000)
 
 ## Installation
 
