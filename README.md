@@ -12,7 +12,6 @@ HiLocus consist of two modules:
 hilocus stat
 
 hilocus trans
-
 ```
 
 ### hilocus stat
